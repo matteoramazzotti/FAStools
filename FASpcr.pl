@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+#(c) matteo.ramazzotti@unifi.it
+
 if (!$ARGV[1]) {
 print STDERR "USAGE: FASpcr.pl [file] forward reverse diff len\n\n"; 
 print STDERR " file: a fastq file (must be omitted with piped data)\n"; 
