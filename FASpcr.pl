@@ -2,7 +2,7 @@
 #(c) matteo.ramazzotti@unifi.it
 
 if (!$ARGV[1]) {
-print STDERR "USAGE: FASpcr.pl [file] forward reverse diff len\n\n"; 
+print STDERR "USAGE: FASpcr.pl [file] forward reverse diff len tol\n\n"; 
 print STDERR " file: a fastq file (must be omitted with piped data)\n"; 
 print STDERR "forward: 5'-sequence-3'\n"; 
 print STDERR "reverse: 5'-sequence-3'\n"; 
