@@ -1,0 +1,57 @@
+#!/usr/bin/perl
+#(c) matteo.ramazzotti@unifi.it
+
+if(!$ARGV[0]) {
+	print "USAGE: FASalnsort.pl in_aln tot out\n\n";
+	print "   in_aln: an input multiple sequence alignment in fasta format\n";
+	print "      tot: the number of top most distant sequences to retain in output\n";	
+	print "      out: the output fasta file name\n\n";
+	print "    nogap: don't count gaps in distance\n\n";
+	exit;
+}
+@ref = split(//,`head -n2 $ARGV[0] | tail -n1`);
+#print join " ",@ref;
+open(IN,$ARGV[0]) or die "cannot open $ARGV[0]";
+while ($line = <IN>) {
+	chomp $line;
+	if ($line =~ /^>/) {
+		if($seq) {
+			$res{$name} = analyze($seq);
+		}
+		$cnt++;
+		$name = $line;
+		$seq = '';
+	} else {
+		$seq .= $line;
+	} 
+}
+$res{$name} = analyze($seq);
+
+`head -n2 $ARGV[0] > $ARGV[2]`;
+
+print STDERR "--- Top $ARGV[1] hits ---\n";
+open(OUT,">$ARGV[2].list");
+@l = sort {$res{$b} <=> $res{$a}} keys %res;
+foreach $p (0..$ARGV[1]-1) {
+	print STDERR $l[$p],"\t",$res{$l[$p]},"\n";
+	print OUT $l[$p],"\t",$res{$l[$p]},"\n";
+	`FASgrep.pl \"$l[$p]\" $ARGV[0] >> $ARGV[2]`;
+}
+close OUT;
+
+sub analyze {
+	my $cnt;
+	my $test = shift;
+	@test = split (//,$test);
+	#print "REF\n",join "",@ref,"\n";
+	#print "TEST\n",join "",@test,"\n";
+	$tot = 0;
+	#n.b. ref -1 because of the trailing newline
+	foreach $p (0..$#ref-1) {
+		$tot++ if ($test[$p] ne $ref[$p]);
+		$tot-- if ($ARGV[$#ARGV] eq "nogap" && $test[$p] eq '-');
+		#print STDERR "$names[$#names] : $test[$p] - $ref[$p] = $tot\n" if ($tot > 0);
+	}
+	#<STDIN> if ($tot > 0);
+	return $tot;
+}
