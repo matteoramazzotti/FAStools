@@ -5,4 +5,6 @@ It is intended to be used in the linux/macOSX shell. Although some script may op
 
 FAStools does not use perl modules but sometimes makes extensive use of basic linux shell commands.
 
+AS a distinctive trait, FAStools script names will always begin with the capital FAS prefix. This is useful for localizing the scripts if users store them in PATH.
+
 Each script has its own mini-help available by an no-option run.
